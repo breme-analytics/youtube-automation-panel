@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Only this page's own files run here, and it talks to nothing but GitHub's API. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src https://api.github.com; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Old Wisdom, Decoded: control panel</title>
+  <link rel="stylesheet" href="panel.css">
+  <script src="panel.js" defer></script>
+  <script src="page.js" defer></script>
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>Old Wisdom, Decoded</h1>
+      <p class="sub">Control panel for the YouTube bot</p>
+    </div>
+    <button id="sign-out" type="button" class="quiet" hidden>Sign out</button>
+  </header>
+
+  <main>
+    <p id="message" role="status" aria-live="polite"></p>
+
+    <section id="sign-in" aria-labelledby="sign-in-title">
+      <h2 id="sign-in-title">Sign in</h2>
+      <p>Paste your GitHub token for the bot's repository. It stays in this browser and is sent only to GitHub.
+        How to make one: <code>docs/GUIDE.md</code>, "Control panel".</p>
+      <form id="sign-in-form" novalidate>
+        <label for="token">GitHub token</label>
+        <input id="token" type="password" autocomplete="off" spellcheck="false" required>
+        <label for="repo">Repository</label>
+        <input id="repo" type="text" autocomplete="off" spellcheck="false" required>
+        <label class="check"><input id="remember" type="checkbox"> Remember on this device</label>
+        <button type="submit">Sign in</button>
+      </form>
+    </section>
+
+    <div id="panel" hidden>
+      <section aria-labelledby="overview-title">
+        <h2 id="overview-title">Overview</h2>
+        <dl id="overview" class="facts"></dl>
+        <button id="refresh" type="button" class="quiet">Refresh</button>
+      </section>
+
+      <section aria-labelledby="needs-title">
+        <h2 id="needs-title">Needs your attention</h2>
+        <ul id="needs" class="list"></ul>
+      </section>
+
+      <section aria-labelledby="waiting-title">
+        <h2 id="waiting-title">Videos waiting for you</h2>
+        <p class="hint">Download and post a video from its issue, then press "Posted". Its stored copy is deleted a week later.</p>
+        <ul id="waiting" class="list"></ul>
+      </section>
+
+      <section aria-labelledby="make-title">
+        <h2 id="make-title">Make a video now</h2>
+        <form id="make-form">
+          <label for="angle">An angle for this one video (optional)</label>
+          <textarea id="angle" rows="2" placeholder="For example: tie it to exam stress"></textarea>
+          <button type="submit">Start making it</button>
+        </form>
+        <p class="hint">Takes about 1 to 2 hours and that many Actions minutes. A "Ready to post" issue arrives when it's done.</p>
+      </section>
+
+      <section aria-labelledby="steer-title">
+        <h2 id="steer-title">Steering</h2>
+        <form id="steer-form">
+          <label for="instructions">Your instructions to the bot (newest at the top)</label>
+          <textarea id="instructions" rows="14" spellcheck="true"></textarea>
+          <button type="submit">Save instructions</button>
+        </form>
+        <h3>Documents the bot follows</h3>
+        <ul id="documents" class="list"></ul>
+        <form id="upload-form">
+          <label for="document">Add a document (PDF, Word, text or Markdown, up to 20 MB)</label>
+          <input id="document" type="file" accept=".pdf,.docx,.txt,.md">
+          <button type="submit">Upload</button>
+        </form>
+      </section>
+
+      <section aria-labelledby="books-title">
+        <h2 id="books-title">Books</h2>
+        <table id="books">
+          <caption class="hint">Each video takes one chapter. Books take turns (setting: book_order).</caption>
+          <thead><tr><th scope="col">Book</th><th scope="col">Videos made</th><th scope="col">Chapters left</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <form id="book-form">
+          <label for="gutenberg">Add a book: its Project Gutenberg number</label>
+          <input id="gutenberg" type="text" inputmode="numeric" pattern="[0-9]+" placeholder="14209" required>
+          <label for="book-chapters">Only these chapters (optional; titles from its contents, separated by commas)</label>
+          <input id="book-chapters" type="text">
+          <label for="book-cite">How to credit it (optional)</label>
+          <input id="book-cite" type="text" placeholder="Author, Title (year)">
+          <button type="submit">Add the book</button>
+        </form>
+        <p class="hint">Find books at gutenberg.org: the number is in the book's address (gutenberg.org/ebooks/<b>14209</b>).
+          The bot checks the chapters can be found, and opens an issue if they can't.</p>
+      </section>
+
+      <section aria-labelledby="schedule-title">
+        <h2 id="schedule-title">Video days and Actions minutes</h2>
+        <form id="schedule-form">
+          <fieldset>
+            <legend>Make a video on</legend>
+            <div id="days" class="days"></div>
+          </fieldset>
+          <label for="budget">Actions minutes this bot may use each month (0 = no limit)</label>
+          <input id="budget" type="number" min="0" step="50">
+          <p id="estimate" class="hint"></p>
+          <button type="submit">Save</button>
+        </form>
+        <p class="hint">Your account's 2,000 free minutes a month are shared with your other private repositories.</p>
+      </section>
+
+      <section aria-labelledby="runs-title">
+        <h2 id="runs-title">Recent runs</h2>
+        <ul id="runs" class="list"></ul>
+      </section>
+
+      <section aria-labelledby="more-title">
+        <h2 id="more-title">More</h2>
+        <ul id="links" class="list"></ul>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <p>This page has no server: it runs in your browser and talks only to GitHub with your token.</p>
+  </footer>
+</body>
+</html>
